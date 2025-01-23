@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700"> <!-- Montserrat 폰트 추가 -->
+    <title>화답(花:答)</title>
+    <style>
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            font-weight: bold;
+            text-align: center;
+            background-image: linear-gradient(to right, #c1c161 0%, #c1c161 0%, #d4d4b1 100%);
+            margin: 0;
+            padding: 0;
+            overflow: hidden; 
+            position: relative;
+        }
+
+        /* 로고 스타일링 */
+        .central-logo {
+            background-color: #228B22; /* 로고 배경색 */
+            color: #F8F8FF;
+            font-size: 3em;
+            padding: 30px 50px; /* 로고 크기 조정 */
+            border-radius: 25px 25px 25px 25px; /* 꼭짓점 부분 라운드 처리 */
+            display: inline-block;
+            margin: 10px 10px 0 10px;
+            border-radius: 10px 10px 10px 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            position: relative; /* 로고의 위치 설정 */
+            z-index: 0;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s; /* 버튼 커지는 효과 추가 */
+        }
+
+        .central-logo:hover {
+            background-color: #90EE90;
+            transform: scale(1.05); /* 버튼 위로 마우스를 가져갔을 때 약간 커지는 효과 */
+        }
+
+        .side-logo {
+            margin: 10px 10px 0 50px;
+            top: -140px;
+            position: relative;
+            cursor: pointer;
+            width: 150px;
+            height: 150px;
+            background: url('{{ url_for('static', filename='images/LOGO3.png') }}') no-repeat; /* 배경 이미지 반복을 중단합니다 */
+            background-size: 75%; /* 이미지를 div에 맞게 크기 조정 */
+            background-position: center;
+            z-index: 3;
+        }
+
+        .side-logo::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 2px solid #8B4513;
+            z-index: 3;
+        }
+
+        .side-logo:hover + .navbar {
+            top: 0;
+        }
+
+        .navbar {
+            position: fixed;
+            top: -1000px; /* 네비게이션 바를 초기에 숨깁니다. */
+            left: 0;
+            right: 0;
+            background-color: rgba(144, 238, 144, 0.2); /* 투명도가 있는 색상 설정 */
+            color: white;
+            text-align: center;
+            margin: 0 10px 0 50px;
+            transition: top 0.5s;
+            width: 150px; /* 네비게이션 바의 너비를 로고와 동일하게 설정 */
+            height: 800px;
+            z-index: 2;
+        }
+
+        
+        .logoimg {
+            background: url('{{ url_for('static', filename='images/LOGO4.png') }}') no-repeat;
+            top: 64%; /* 세로 중앙 정렬을 위해 50% 상단 여백 설정 */
+            left: 50%; /* 가로 중앙 정렬을 위해 50% 왼쪽 여백 설정 */
+            transform: translate(-50%, -50%); /* 가로 및 세로 중앙 정렬을 위한 변형(transform) 설정 */
+            position: fixed;
+            width: 700px;
+            height: 700px;
+            z-index: -2;
+        }
+
+        
+
+        /* 질문 폼 스타일링 */
+        form {
+            margin: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            font-size: 1.2em;
+            display: block;
+        }
+
+        button {
+            padding: 20px 30px;
+            background-color: #808000;
+            color: #E6E6FA;
+            border: none;
+            font-size: 1.5em;
+            z-index: 0;
+            cursor: pointer;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            position: relative; /* 로고의 위치 설정 */
+            transition: background-color 0.3s, transform 0.3s; /* 버튼 커지는 효과 추가 */
+        }
+
+        button:hover {
+            background-color: #BDB76B;
+            transform: scale(1.05); /* 버튼 위로 마우스를 가져갔을 때 약간 커지는 효과 */
+        }
+
+        /* 질문 및 답변 스타일링 */
+        .conversation {
+            font-family: 'Montserrat', sans-serif; /* Montserrat 폰트 적용 */
+            font-weight: 300; 
+            position: fixed;
+            background-color: rgba(255, 255, 255, 0.9);
+            margin: auto; /* 가로 중앙 정렬 */
+            top: 50%; /* 세로 중앙 정렬을 위해 50% 상단 여백 설정 */
+            left: 50%; /* 가로 중앙 정렬을 위해 50% 왼쪽 여백 설정 */
+            transform: translate(-50%, -50%); /* 가로 및 세로 중앙 정렬을 위한 변형(transform) 설정 */
+            padding: 40px;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 10px 10px 10px 10px;
+            box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.2);
+            z-index: 3;
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.5s ease-in; /* 팝업창 나타날 때 페이드 인 애니메이션 추가 */
+        }
+        
+        .overlay {
+            position:fixed;
+            top: 0;
+            left: 0;
+            width: 3000px;
+            height: 3000px;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1; /* 네비게이션 바와 로고 위에 위치 */
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+        h2, p {
+            color: #696969;
+        }
+
+        p {
+            font-size: 25px;
+        }
+
+        /* 오디오 플레이어 숨김 스타일 */
+        audio {
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="central-logo" onclick="goToMainPage()">화답(花:答)</div>
+            <div class="side-logo"></div>
+        <div class="navbar">
+            <p><br><br><br><br><br>USUP<br>당신을<br>돕다.</p>
+            <p><소프트><br><웨어><br>김경필</P>
+                <p><하드><br><웨어><br>이강민</P>
+                <p><기획><br>장건웅</P>
+                <p><마케팅><br>박주형</P>
+        </div>
+
+    <form method="POST" action="/ask">
+        <label>질문을 말해주세요!<br>버튼을 누르면 음성인식이 됩니다<br>(ex: 너는 누구야? 기능이 뭐야?)</label>
+        <br>
+        <button type="submit">질문하기</button>
+    </form>
+    <br><br>
+    <div class="logoimg"></div>
+
+    {% if question %}
+    <div class="overlay"></div>
+        <div class="conversation">
+            <span class="close-button" onclick="closeOverlay()">&times;</span> <!-- X 버튼 -->
+            <h2>질문:</h2>
+            <p>{{ question }}</p>
+            <h2>답변:</h2>
+            <p>{{ answer }}</p>
+        </div>
+        <audio controls autoplay>
+            <source src="{{ mp3_url }}" type="audio/mp3">
+            Your browser does not support the audio element.
+        </audio>
+    {% endif %}
+
+
+    <script>
+        function closeOverlay() {
+            var overlay = document.querySelector(".overlay");
+            var conversation = document.querySelector(".conversation");
+
+            if (overlay) {
+                overlay.style.display = "none";
+            }
+
+            if (conversation) {
+                conversation.style.display = "none";
+            }
+        }
+        // JavaScript로 클릭 이벤트 처리
+        function goToMainPage() {
+            window.location.href = '/'; // 메인 페이지 URL로 이동
+        }
+    </script>
+</body>
+</html>
